@@ -73,6 +73,7 @@ def create(target, module_name):
 	    'openssl/crypto/o_fips.c',
 	    'openssl/crypto/o_init.c',
 	    'openssl/crypto/fips_ers.c',
+	    'openssl/crypto/mem_clr.c',
 	    ])
 	#/usr/bin/perl openssl/crypto/x86_64cpuid.pl elf > x86_64cpuid.s
 	my_module.add_src_file([
@@ -752,7 +753,39 @@ def create(target, module_name):
 	    'openssl/crypto/cmac/cm_ameth.c',
 	    'openssl/crypto/cmac/cm_pmeth.c',
 	    ])
-	
+	#line(---)= gcc -I../include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -c -o
+	my_module.add_src_file([
+	    'openssl/engines/e_4758cca.c',
+	    'openssl/engines/e_aep.c',
+	    'openssl/engines/e_atalla.c',
+	    'openssl/engines/e_cswift.c',
+	    'openssl/engines/e_gmp.c',
+	    'openssl/engines/e_chil.c',
+	    'openssl/engines/e_nuron.c',
+	    'openssl/engines/e_sureware.c',
+	    'openssl/engines/e_ubsec.c',
+	    'openssl/engines/e_padlock.c',
+	    'openssl/engines/e_capi.c',
+	    ])
+	#line(---) = gcc -I../../include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -c -o
+	my_module.add_src_file([
+	    'openssl/engines/ccgost/e_gost_err.c',
+	    'openssl/engines/ccgost/gost2001_keyx.c',
+	    'openssl/engines/ccgost/gost2001.c',
+	    'openssl/engines/ccgost/gost89.c',
+	    'openssl/engines/ccgost/gost94_keyx.c',
+	    'openssl/engines/ccgost/gost_ameth.c',
+	    'openssl/engines/ccgost/gost_asn1.c',
+	    'openssl/engines/ccgost/gost_crypt.c',
+	    'openssl/engines/ccgost/gost_ctl.c',
+	    'openssl/engines/ccgost/gost_eng.c',
+	    'openssl/engines/ccgost/gosthash.c',
+	    'openssl/engines/ccgost/gost_keywrap.c',
+	    'openssl/engines/ccgost/gost_md.c',
+	    'openssl/engines/ccgost/gost_params.c',
+	    'openssl/engines/ccgost/gost_pmeth.c',
+	    'openssl/engines/ccgost/gost_sign.c',
+	    ])
 	my_module.compile_flags('c', [
 	    '-DOPENSSL_THREADS',
 	    '-D_REENTRANT',
@@ -762,10 +795,12 @@ def create(target, module_name):
 	    '-m64',
 	    '-DL_ENDIAN',
 	    ])
+	my_module.compile_flags('c', [
+	    '-DOPENSSL_NO_ASM',
+	    ])
 	my_module.compile_version("c", 1989, gnu=True)
 	my_module.add_module_depend('z')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl"))
-	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "include"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "crypto"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "crypto", "modes"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "crypto", "asn1"))
@@ -851,17 +886,5 @@ def create(target, module_name):
 	    'generate/buildinf.h',
 	    ],
 	    destination_path="openssl")
-	"""
-	my_module.add_header_file([
-	    'openssl/ssl/dtls1.h',
-	    'openssl/ssl/kssl.h',
-	    'openssl/ssl/srtp.h',
-	    'openssl/ssl/ssl.h',
-	    'openssl/ssl/ssl2.h',
-	    'openssl/ssl/ssl23.h',
-	    'openssl/ssl/ssl3.h',
-	    'openssl/ssl/tls1.h',
-	    ],
-	    destination_path="openssl")
-	"""
+	
 	return my_module
