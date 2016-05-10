@@ -26,6 +26,7 @@ def get_version():
 	return [1,0,2]
 
 """
+basic:
 /usr/bin/perl ../util/mkbuildinf.pl "gcc -Iopenssl/crypto -Iopenssl -Iopenssl/include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM" "linux-x86_64" >buildinf.h
 -Iopenssl/crypto -Iopenssl -Iopenssl/include
 -DOPENSSL_THREADS
@@ -48,6 +49,23 @@ def get_version():
 -DBSAES_ASM
 -DWHIRLPOOL_ASM
 -DGHASH_ASM
+"""
+
+"""
+with no ASM :
+-DOPENSSL_NO_DEPRECATED
+-DOPENSSL_NO_EC_NISTP_64_GCC_128
+-DOPENSSL_NO_GMP
+-DOPENSSL_NO_JPAKE
+-DOPENSSL_NO_MD2
+-DOPENSSL_NO_RC5
+-DOPENSSL_NO_RFC3779
+-DOPENSSL_NO_SCTP
+-DOPENSSL_NO_SSL2
+-DOPENSSL_NO_STORE
+-DOPENSSL_NO_UNIT_TEST
+-DOPENSSL_NO_WEAK_SSL_CIPHERS
+
 """
 
 def create(target, module_name):
@@ -118,6 +136,7 @@ def create(target, module_name):
 	    ])
 	my_module.add_src_file([
 	    'openssl/crypto/whrlpool/wp_dgst.c',
+	    'openssl/crypto/whrlpool/wp_block.c',# add if no asm
 	    ])
 	#/usr/bin/perl openssl/crypto/whrlpool/asm/wp-x86_64.pl elf > wp-x86_64.s
 	my_module.add_src_file([
@@ -149,6 +168,8 @@ def create(target, module_name):
 	    'openssl/crypto/des/read2pwd.c',
 	    ])
 	my_module.add_src_file([
+	    'openssl/crypto/aes/aes_core.c', # add if no asm
+	    'openssl/crypto/aes/aes_cbc.c', # add if no asm
 	    'openssl/crypto/aes/aes_misc.c',
 	    'openssl/crypto/aes/aes_ecb.c',
 	    'openssl/crypto/aes/aes_cfb.c',
@@ -171,6 +192,8 @@ def create(target, module_name):
 	    ])
 	my_module.add_src_file([
 	    'openssl/crypto/rc4/rc4_utl.c',
+	    'openssl/crypto/rc4/rc4_skey.c', # add if no asm
+	    'openssl/crypto/rc4/rc4_enc.c', # add if no asm
 	    ])
 	#/usr/bin/perl openssl/crypto/rc4/asm/rc4-x86_64.pl elf > rc4-x86_64.s
 	#/usr/bin/perl openssl/crypto/rc4/asm/rc4-md5-x86_64.pl elf > rc4-md5-x86_64.s
@@ -196,6 +219,8 @@ def create(target, module_name):
 	    'openssl/crypto/cast/c_ofb64.c',
 	    ])
 	my_module.add_src_file([
+	    'openssl/crypto/camellia/camellia.c', # add if no asm
+	    'openssl/crypto/camellia/cmll_cbc.c', # add if no asm
 	    'openssl/crypto/camellia/cmll_ecb.c',
 	    'openssl/crypto/camellia/cmll_ofb.c',
 	    'openssl/crypto/camellia/cmll_cfb.c',

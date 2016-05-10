@@ -33,35 +33,12 @@ def create(target, module_name):
 	my_module.add_src_file([
 	    'openssl/apps/apps.c',
 	    'openssl/apps/app_rand.c',
-	    'openssl/apps/speed.c',
+	    #'openssl/apps/genpkey.c',
+	    'openssl/apps/dh.c',
 	    ])
 	my_module.compile_flags('link', [
 	    '-ldl',
 	    ])
-	"""
-	    'openssl/apps/s_client.c',
-	    'openssl/apps/speed.c',
-	    'openssl/apps/apps.c',
-	    'openssl/apps/version.c',
-	    'openssl/apps/sess_id.c',
-	    'openssl/apps/ciphers.c',
-	    'openssl/apps/nseq.c',
-	    'openssl/apps/pkcs12.c',
-	    'openssl/apps/pkcs8.c',
-	    'openssl/apps/pkey.c',
-	    'openssl/apps/pkeyparam.c',
-	    'openssl/apps/pkeyutl.c',
-	    'openssl/apps/spkac.c',
-	    'openssl/apps/smime.c',
-	    'openssl/apps/cms.c',
-	    'openssl/apps/rand.c',
-	    'openssl/apps/engine.c',
-	    'openssl/apps/ocsp.c',
-	    'openssl/apps/prime.c',
-	    'openssl/apps/ts.c',
-	    'openssl/apps/srp.c',
-	    'openssl/apps/openssl.c'
-	"""
 	my_module.compile_version("c", 1989, gnu=True)
 	my_module.add_module_depend('openssl')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "apps"))
