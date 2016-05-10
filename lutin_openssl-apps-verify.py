@@ -7,6 +7,9 @@ import os
 def get_type():
 	return "BINARY"
 
+def get_sub_type():
+	return "SAMPLE"
+
 def get_desc():
 	return "open SSL crypto library"
 
@@ -33,9 +36,6 @@ def create(target, module_name):
 	my_module.add_src_file([
 	    'openssl/apps/apps.c',
 	    'openssl/apps/verify.c',
-	    ])
-	my_module.compile_flags('link', [
-	    '-ldl',
 	    ])
 	my_module.compile_version("c", 1989, gnu=True)
 	my_module.add_module_depend('openssl')

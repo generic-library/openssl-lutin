@@ -7,6 +7,9 @@ import os
 def get_type():
 	return "BINARY"
 
+def get_sub_type():
+	return "SAMPLE"
+
 def get_desc():
 	return "open SSL crypto library"
 
@@ -34,9 +37,6 @@ def create(target, module_name):
 	    'openssl/apps/apps.c',
 	    'openssl/apps/app_rand.c',
 	    'openssl/apps/speed.c',
-	    ])
-	my_module.compile_flags('link', [
-	    '-ldl',
 	    ])
 	"""
 	    'openssl/apps/s_client.c',

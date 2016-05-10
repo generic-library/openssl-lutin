@@ -911,5 +911,8 @@ def create(target, module_name):
 	    'generate/buildinf.h',
 	    ],
 	    destination_path="openssl")
-	
+	# TODO : Check it and do it better ...
+	my_module.add_export_flag('link', [
+	    '-ldl',
+	    ])
 	return my_module
