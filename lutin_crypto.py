@@ -266,7 +266,7 @@ def create(target, module_name):
 	    'openssl/crypto/bn/bn_prime.c',
 	    'openssl/crypto/bn/bn_err.c',
 	    'openssl/crypto/bn/bn_sqr.c',
-	    'openssl/crypto/bn/asm/x86_64-gcc.c',
+	    'openssl/crypto/bn/bn_asm.c', # or for x86 'openssl/crypto/bn/asm/x86_64-gcc.c', # I do not understand why ...
 	    'openssl/crypto/bn/bn_recp.c',
 	    'openssl/crypto/bn/bn_mont.c',
 	    'openssl/crypto/bn/bn_mpi.c',
@@ -817,9 +817,12 @@ def create(target, module_name):
 	    '-DDSO_DLFCN',
 	    '-DHAVE_DLFCN_H',
 	    '-Wa,--noexecstack',
-	    '-m64',
 	    '-DL_ENDIAN',
 	    ])
+	if target.name != "RPI3":
+		my_module.compile_flags('c', [
+		    '-m64',
+		    ])
 	my_module.compile_flags('c', [
 	    '-DOPENSSL_NO_ASM',
 	    ])
