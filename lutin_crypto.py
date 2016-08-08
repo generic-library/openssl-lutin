@@ -918,4 +918,10 @@ def create(target, module_name):
 	my_module.add_export_flag('link', [
 	    '-ldl',
 	    ])
+	my_module.add_module_depend([
+	    'c',
+	    'm',
+	    'rpc',
+	    'arpa',
+	    ])
 	return my_module
