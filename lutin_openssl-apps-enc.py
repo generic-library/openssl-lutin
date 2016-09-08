@@ -39,7 +39,7 @@ def create(target, module_name):
 	    'openssl/apps/enc.c',
 	    ])
 	my_module.compile_version("c", 1989, gnu=True)
-	my_module.add_module_depend('openssl')
+	my_module.add_depend('openssl')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "apps"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl/crypto"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl"))

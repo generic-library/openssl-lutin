@@ -811,7 +811,7 @@ def create(target, module_name):
 	    'openssl/engines/ccgost/gost_pmeth.c',
 	    'openssl/engines/ccgost/gost_sign.c',
 	    ])
-	my_module.compile_flags('c', [
+	my_module.add_flag('c', [
 	    '-DOPENSSL_THREADS',
 	    '-D_REENTRANT',
 	    '-DDSO_DLFCN',
@@ -819,15 +819,15 @@ def create(target, module_name):
 	    '-Wa,--noexecstack',
 	    '-DL_ENDIAN',
 	    ])
-	if target.name != "RPI3":
-		my_module.compile_flags('c', [
+	if "RPI3" in target.get_type():
+		my_module.add_flag('c', [
 		    '-m64',
 		    ])
-	my_module.compile_flags('c', [
+	my_module.add_flag('c', [
 	    '-DOPENSSL_NO_ASM',
 	    ])
 	my_module.compile_version("c", 1989, gnu=True)
-	my_module.add_module_depend('z')
+	my_module.add_depend('z')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "crypto"))
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl", "crypto", "modes"))
@@ -905,7 +905,7 @@ def create(target, module_name):
 	    destination_path="openssl")
 	
 	my_module.add_header_file([
-	    'generate/' + target.name + '/opensslconf.h',
+	    'generate/' + target.get_name() + '/opensslconf.h',
 	    ],
 	    destination_path="openssl")
 	# normaly generate with : /usr/bin/perl util/mkbuildinf.pl "gcc -Iopenssl/crypto -Iopenssl -Iopenssl/include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM" "linux-x86_64" >buildinf.h
@@ -915,10 +915,11 @@ def create(target, module_name):
 	    ],
 	    destination_path="openssl")
 	# TODO : Check it and do it better ...
-	my_module.add_export_flag('link', [
+	my_module.add_flag('link', [
 	    '-ldl',
-	    ])
-	my_module.add_module_depend([
+	    ],
+	    export=True)
+	my_module.add_depend([
 	    'c',
 	    'm',
 	    'rpc',
