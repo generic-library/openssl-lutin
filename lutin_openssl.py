@@ -94,9 +94,6 @@ def create(target, module_name):
 	    ],
 	    destination_path="openssl")
 	
-	my_module.add_flag('c', [
-	    '-DOPENSSL_NO_ASM',
-	    ])
 	my_module.compile_version("c", 1989, gnu=True)
 	my_module.add_depend('crypto')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl"))

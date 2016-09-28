@@ -3,6 +3,7 @@ import lutin.module as module
 import lutin.tools as tools
 import os
 
+#Windows build : CROSS_COMPILE="x86_64-w64-mingw32-" ./Configure mingw64 no-asm shared --prefix=/opt/mingw6
 
 def get_type():
 	return "LIBRARY"
@@ -24,49 +25,6 @@ def get_maintainer():
 
 def get_version():
 	return [1,0,2]
-
-"""
-basic:
-/usr/bin/perl ../util/mkbuildinf.pl "gcc -Iopenssl/crypto -Iopenssl -Iopenssl/include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM" "linux-x86_64" >buildinf.h
--Iopenssl/crypto -Iopenssl -Iopenssl/include
--DOPENSSL_THREADS
--D_REENTRANT
--DDSO_DLFCN
--DHAVE_DLFCN_H
--Wa,--noexecstack
--m64
--DL_ENDIAN
--DOPENSSL_IA32_SSE2
--DOPENSSL_BN_ASM_MONT
--DOPENSSL_BN_ASM_MONT5
--DOPENSSL_BN_ASM_GF2m
--DSHA1_ASM
--DSHA256_ASM
--DSHA512_ASM
--DMD5_ASM
--DAES_ASM
--DVPAES_ASM
--DBSAES_ASM
--DWHIRLPOOL_ASM
--DGHASH_ASM
-"""
-
-"""
-with no ASM :
--DOPENSSL_NO_DEPRECATED
--DOPENSSL_NO_EC_NISTP_64_GCC_128
--DOPENSSL_NO_GMP
--DOPENSSL_NO_JPAKE
--DOPENSSL_NO_MD2
--DOPENSSL_NO_RC5
--DOPENSSL_NO_RFC3779
--DOPENSSL_NO_SCTP
--DOPENSSL_NO_SSL2
--DOPENSSL_NO_STORE
--DOPENSSL_NO_UNIT_TEST
--DOPENSSL_NO_WEAK_SSL_CIPHERS
-
-"""
 
 def create(target, module_name):
 	my_module = module.Module(__file__, module_name, get_type())
@@ -779,19 +737,20 @@ def create(target, module_name):
 	    'openssl/crypto/cmac/cm_pmeth.c',
 	    ])
 	#line(---)= gcc -I../include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -c -o
-	my_module.add_src_file([
-	    'openssl/engines/e_4758cca.c',
-	    'openssl/engines/e_aep.c',
-	    'openssl/engines/e_atalla.c',
-	    'openssl/engines/e_cswift.c',
-	    'openssl/engines/e_gmp.c',
-	    'openssl/engines/e_chil.c',
-	    'openssl/engines/e_nuron.c',
-	    'openssl/engines/e_sureware.c',
-	    'openssl/engines/e_ubsec.c',
-	    'openssl/engines/e_padlock.c',
-	    'openssl/engines/e_capi.c',
-	    ])
+	if "Windows" not in target.get_type():
+		my_module.add_src_file([
+		    'openssl/engines/e_4758cca.c',
+		    'openssl/engines/e_aep.c',
+		    'openssl/engines/e_atalla.c',
+		    'openssl/engines/e_cswift.c',
+		    'openssl/engines/e_gmp.c',
+		    'openssl/engines/e_chil.c',
+		    'openssl/engines/e_nuron.c',
+		    'openssl/engines/e_sureware.c',
+		    'openssl/engines/e_ubsec.c',
+		    'openssl/engines/e_padlock.c',
+		    'openssl/engines/e_capi.c',
+		    ])
 	#line(---) = gcc -I../../include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -c -o
 	my_module.add_src_file([
 	    'openssl/engines/ccgost/e_gost_err.c',
@@ -813,19 +772,40 @@ def create(target, module_name):
 	    ])
 	my_module.add_flag('c', [
 	    '-DOPENSSL_THREADS',
-	    '-D_REENTRANT',
-	    '-DDSO_DLFCN',
-	    '-DHAVE_DLFCN_H',
-	    '-Wa,--noexecstack',
 	    '-DL_ENDIAN',
-	    ])
+	    '-D_REENTRANT',
+	    ],
+	    export=True)
+	
+	if "Windows" not in target.get_type():
+		my_module.add_flag('c', [
+		    '-Wa,--noexecstack',
+		    '-DHAVE_DLFCN_H',
+		    '-DDSO_DLFCN',
+		    ])
+	else:
+		my_module.add_flag('c', [
+		    "-D_WINDLL",
+		    "-DOPENSSL_PIC",
+		    "-D_MT",
+		    "-DDSO_WIN32",
+		    "-DWIN32_LEAN_AND_MEAN",
+		    "-DUNICODE",
+		    "-D_UNICODE"
+		    ],
+		    export=True)
 	if "RPI3" in target.get_type():
 		my_module.add_flag('c', [
 		    '-m64',
 		    ])
 	my_module.add_flag('c', [
 	    '-DOPENSSL_NO_ASM',
-	    ])
+	    ],
+	    export=True)
+	if "Windows" in target.get_type():
+		my_module.add_depend([
+		    "gdi"
+		    ])
 	my_module.compile_version("c", 1989, gnu=True)
 	my_module.add_depend('z')
 	my_module.add_path(os.path.join(tools.get_current_path(__file__), "openssl"))
@@ -914,15 +894,13 @@ def create(target, module_name):
 	    'generate/buildinf.h',
 	    ],
 	    destination_path="openssl")
-	# TODO : Check it and do it better ...
-	my_module.add_flag('link', [
-	    '-ldl',
-	    ],
-	    export=True)
 	my_module.add_depend([
 	    'c',
-	    'm',
-	    'rpc',
-	    'arpa',
+	    'm'
 	    ])
+	if "Linux" in target.get_type():
+		my_module.add_depend([
+		    'rpc',
+		    'arpa',
+		    ])
 	return my_module
