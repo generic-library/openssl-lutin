@@ -883,10 +883,20 @@ def configure(target, my_module):
 	    ],
 	    destination_path="openssl")
 	
-	my_module.add_header_file([
-	    'generate/' + target.get_name() + '/opensslconf.h',
-	    ],
-	    destination_path="openssl")
+	found_one_element = False
+	for elem in reversed(target.get_type()):
+		filename = 'generate/' + elem + '/opensslconf.h'
+		if not os.path.isfile(os.path.join(my_module.get_origin_path(), filename)):
+			debug.warning("Not found: " + os.path.join(my_module.get_origin_path(), filename))
+		else:
+			found_one_element = True
+			my_module.add_header_file([
+			    filename,
+			    ],
+			    destination_path="openssl")
+			break
+	if found_one_element == False:
+		debug.error("crypto: can not import auto-generate file: " + 'generate/' + str(target.get_type()) + '/opensslconf.h')
 	# normaly generate with : /usr/bin/perl util/mkbuildinf.pl "gcc -Iopenssl/crypto -Iopenssl -Iopenssl/include -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -Wa,--noexecstack -m64 -DL_ENDIAN -O3 -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM" "linux-x86_64" >buildinf.h
 	# but I do not understand the utility (global build of the application
 	my_module.add_header_file([
