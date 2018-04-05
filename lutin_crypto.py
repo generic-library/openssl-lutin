@@ -797,6 +797,10 @@ def configure(target, my_module):
 		my_module.add_flag('c', [
 		    '-m64',
 		    ])
+	if "buildroot" in target.get_type():
+		my_module.add_flag('link-dynamic', [
+		    '-ldl',
+		    ])
 	my_module.add_flag('c', [
 	    '-DOPENSSL_NO_ASM',
 	    ],
